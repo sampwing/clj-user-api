@@ -1,5 +1,6 @@
 (ns user-api.handler
-  (:require [user-api.token :as token]
+  (:require [user-api.authenticate :as auth]
+            [user-api.token :as token]
             [user-api.user :as user]
             [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
@@ -13,6 +14,11 @@
     :title "User API")
   (swaggered "api"
     :description "api base"
+
+    (GET* "/t" []
+      :summary "test authentication"
+      (let [r (auth/t)]
+        (ok r)))
 
     (GET* "/user" []
       :return Message

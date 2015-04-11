@@ -12,3 +12,7 @@
   (let [user {:username username :password password}]
     (def users (assoc users (keyword username) user))
     user))
+
+(defn lookup [username] 
+  ; lookup a user via username
+  (get users username))
