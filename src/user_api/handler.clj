@@ -2,6 +2,7 @@
   (:require [user-api.authenticate :as auth]
             [user-api.token :as token]
             [user-api.user :as user]
+            [user-api.location :as location]
             [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
             [schema.core :as s]))
@@ -14,6 +15,21 @@
     :title "User API")
   (swaggered "api"
     :description "api base"
+
+    (GET* "/location" []
+          :summary "List all locations"
+          (ok (location/list)))
+
+    (GET* "/location/:id" []
+          :summary "List location information"
+          :path-params [id :- s/Int]
+          (ok (location/lookup id)))
+
+    (POST* "/location" []
+           :body-params [lat :- s/Num lon :- s/Num]
+           :summary "Create a new location"
+           (ok (location/create lat lon)))
+
 
     (GET* "/t" []
       :summary "test authentication"
