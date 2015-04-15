@@ -1,19 +1,17 @@
 (ns user-api.location
-  (:require [schema.core :as s]))
+  (:require [schema.core :as s]
+            [user-api.util :as util]))
 
 (s/defschema Location
   {:lat s/Num :lon s/Num :id s/Int})
 
 (def locations {})
 
-(defn location_id [n] 
-  (keyword (str "id_" n)))
-
 ;; create a new location
 (defn create [lat lon]
   (let [id (count locations)
         location {:lat lat :lon lon :id id}]
-    (def locations (assoc locations (location_id id) location))
+    (def locations (assoc locations (util/gen_id id) location))
     location))
 
 (defn list []
@@ -21,4 +19,4 @@
   (vals locations))
 
 (defn lookup [id]
-  (get locations (location_id id)))
+  (get locations (util/gen_id id)))

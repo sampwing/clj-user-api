@@ -3,6 +3,8 @@
             [user-api.token :as token]
             [user-api.user :as user]
             [user-api.location :as location]
+            [user-api.event :as event]
+            [user-api.pin :as pin]
             [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
             [schema.core :as s]))
@@ -30,6 +32,21 @@
            :summary "Create a new location"
            (ok (location/create lat lon)))
 
+    (GET* "/event" []
+          :summary "List all events"
+          (ok (event/list)))
+
+    (GET* "/event/:id" []
+          :path-params [id :- s/Int]
+          (ok (event/lookup id)))
+
+    (POST* "/event" []
+           :body-params [name :- s/Str]
+           (ok (event/create name)))
+
+    (PUT* "/event/:eid/pin/:pid" []
+          :path-params [eid :- s/Int pid :- s/Int]
+          (ok (event/add_pin eid pid)))
 
     (GET* "/t" []
       :summary "test authentication"
