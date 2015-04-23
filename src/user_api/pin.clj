@@ -1,22 +1,28 @@
 (ns user-api.pin
   (:require [schema.core :as s]
-            [user-api.util :as util]))
+            [user-api.util :as util]
+            [user-api.db :as db]
+            [rethinkdb.query :as r]))
 
 (s/defschema Pin
   {:location_id s/Int :user_id s/Int :pin_id s/Int})
 
-(def pins {})
+(defn find [{:keys [location_id user_id]}]
+  (first (-> (r/db db/name)
+             (r/table db/pin)
+             (r/filter (r/fn [row]
+                             (and (r/eq location_id (r/get-field row :location_id))
+                                  (r/eq user_id (r/get-field row :user_id))))))))
 
-;; create a new pin
 (defn create [location_id user_id]
-  (let [id (count pins)
-        pin {:location_id location_id :user_id user_id :id id}]
-    (def pins (assoc pins (util/gen_id id) pin))
-    pin))
+  (let [pin {:location_id location_id, :user_id user_id}
+        found-pin (find {:location_id location_id :user_id user_id})]
+    (if (nil? found-pin)
+      (db/insert-record {:table db/pin :record pin}))))
 
 (defn list []
   ; get all pins
-  (vals pins))
+  (db/get-all-records {:table db/pin}))
 
 (defn lookup [id]
-  (get pins (util/gen_id id)))
+  (db/get-record {:table db/pin :id id}))

@@ -54,10 +54,12 @@
         (ok r)))
 
     (GET* "/user" []
-      :return Message
       :query-params [name :- String]
       :summary "get user"
-      (ok {:message (str "Hello, " name)}))
+      (let [user (user/find name)]
+        (if (nil? user)
+          (not-found nil)
+          (ok user))))
 
     (POST* "/user" []
       :return user/User
@@ -95,5 +97,4 @@
       ;; verify email using token
       :query-params [username :- String token :- Long expires :- Long]
       :summary "verify user's email address"
-      (ok {:result (token/test-token token expires username)}))
-    ))
+      (ok {:result (token/test-token token expires username)}))))
