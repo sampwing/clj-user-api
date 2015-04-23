@@ -2,3 +2,5 @@
 target/**
 *.iml
 .nrepl-port
+.lein-env
+.lein-failures

@@ -1,10 +1,11 @@
 (ns user-api.db
   (:require [rethinkdb.core :refer [connect close]]
-            [rethinkdb.query :as r]))
+            [rethinkdb.query :as r]
+            [environ.core :refer [env]]))
 
 (def conn (connect :host "127.0.0.1" :port 28015))
 
-(def name "user_api")
+(def name (env :database-name))
 (def user "users")
 (def location "locations")
 (def event "events")
@@ -34,7 +35,8 @@
 
 (defn initialize []
   (let [dbs (-> (r/db-list) (r/run conn))]
-    (if (contains? dbs name)
+    (println dbs)
+    (if (some #{name} dbs)
       (-> (r/db-drop name)
           (r/run conn))))
   (-> (r/db-create name)

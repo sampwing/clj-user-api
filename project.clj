@@ -6,9 +6,13 @@
                  [metosin/ring-swagger-ui "2.0.24"]
                  [clj-time "0.9.0"]
                  [clj-jwt "0.0.12"]
-                 [rethinkdb "0.4.39"]]
+                 [rethinkdb "0.4.39"]
+                 [environ "1.0.0"]]
   :ring {:handler user-api.handler/app}
   :uberjar-name "server.jar"
+  :plugins [[lein-environ "1.0.0"]]
   :profiles {:uberjar {:resource-paths ["swagger-ui"]}
              :dev {:dependencies [[javax.servlet/servlet-api "2.5"]]
-                   :plugins [[lein-ring "0.9.0"]]}})
+                   :plugins [[lein-ring "0.9.0"]]
+                   :env {:database-name "user_api"}}
+             :test {:env {:database-name "user_api_test"}}})
