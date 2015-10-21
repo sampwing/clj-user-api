@@ -4,8 +4,17 @@
             [user-api.db :as db]
             [rethinkdb.query :as r]))
 
-(s/defschema Location
-  {:lat s/Num :lon s/Num :id s/Int})
+;(s/defschema Location
+;  {:lat s/Num :lon s/Num :id s/Int})
+
+;(defrecord Location [lat lon])
+
+;(defprotocol to-map
+;  (->map [this]))
+;
+;(extend-protocol to-map
+;  Location
+;  (->map [location] {:lat (:lat location) :lon (:lon location)}))
 
 (defn find [lat lon]
   (first (-> (r/db db/name)
@@ -16,6 +25,7 @@
 
 (defn create [lat lon]
   (let [location {:lat lat :lon lon}
+        ;location (->Location {:lat lat :lon lon})
         found-location (find lat lon)]
     (if (nil? found-location)
       (db/insert-record {:table db/location :record location}))))

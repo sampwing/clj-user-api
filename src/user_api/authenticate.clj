@@ -6,6 +6,10 @@
 
 (def JWT-KEY "abc")
 
+(defrecord Claim [iss exp iat])
+
+
+
 (defn- build-claim 
   [& {:keys [iss exp iat] :or {iss "joe" exp 1 iat 0}}]
   (println (str iss exp iat))

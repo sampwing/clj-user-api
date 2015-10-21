@@ -51,7 +51,9 @@
     (GET* "/api/t" []
       :summary "test authentication"
       (let [r (auth/t)]
-        (ok r)))
+        (if (nil? r)
+          (not-found nil)
+          (ok r))))
 
     (GET* "/api/user" []
       :query-params [name :- String]
