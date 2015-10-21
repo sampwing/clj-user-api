@@ -20,9 +20,12 @@
     (if (nil? found-location)
       (db/insert-record {:table db/location :record location}))))
 
-(defn list []
-  ; get all locations
-  (db/get-all-records {:table db/location}))
+; TODO should replace these with SC Center
+(defn list [{:keys [lat lon] :or {:lat 0 :lon 0}}]
+  (let [point (r/point lat lon)
+        result (db/get-nearest {:table db/location :point point :index db/location-geo-index})]
+    (println result)
+    result))
 
 (defn lookup [id]
   (db/get-record {:table db/location :id id}))

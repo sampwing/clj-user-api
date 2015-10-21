@@ -8,6 +8,7 @@
 (def name (env :database-name))
 (def user "users")
 (def location "locations")
+(def location-geo-index "geo")
 (def event "events")
 (def pin "pins")
 
@@ -33,6 +34,16 @@
       (r/all)
       (r/run conn)))
 
+(defn get-nearest [{:keys [table point index args]}]
+  (let [addtl-args (assoc (if (nil? args)
+                            {}
+                            args) "index" index)]
+    (println addtl-args)
+    (let [r (-> (r/db name)
+        (r/get-nearest table point addtl-args)
+        (r/run conn))]
+      (println r))))
+
 (defn initialize []
   (let [dbs (-> (r/db-list) (r/run conn))]
     (println dbs)
@@ -46,6 +57,12 @@
       (r/run conn))
   (-> (r/db name)
       (r/table-create location)
+      (r/run conn))
+  (-> (r/db name)
+      (r/table location)
+      (r/index-create location-geo-index (r/fn [row]
+                                               (r/get-field row (keyword location-geo-index)))
+                      {:geo true})
       (r/run conn))
   (-> (r/db name)
       (r/table-create event)

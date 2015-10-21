@@ -6,8 +6,8 @@
 (deftest test-handler
   (db/initialize)
   (testing "location"
-    (let [response (handler/app {:request-method :get :uri "/location"})]
+    (let [response (handler/app {:request-method :get :uri "/api/location"})]
       (is (:status response) 200)))
   (testing "event"
-    (let [response (handler/app {:request-method :get :uri "/event"})]
+    (let [response (handler/app {:request-method :get :uri "/api/event"})]
       (is (:status response) 200))))
